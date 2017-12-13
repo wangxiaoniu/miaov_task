@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>点击向上 消失</title>
+    <style>
+        .main{
+            border:1px solid #000;
+            height: 40px;
+            line-height: 40px;
+            width: 500px;
+            margin:100px auto;
+            position: relative;
+        }
+        .span{
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 999;
+        }
+        span{
+            display: inline-block;
+            width: 50px;
+            text-align: center;
+            font-size: 20px;
+            z-index: 99;
+
+        }
+        .box_color{
+            height: 40px;
+            position: absolute;
+            left: 0;
+            top:0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main">
+    <div class="span">
+        <span >+1</span>
+        <span>+1</span>
+        <span>+1</span>
+        <span>+1</span>
+        <span>+1</span>
+        <span>+1</span>
+        <span>+1</span>
+        <span>+1</span>
+    </div>
+
+    <div class="box_color"></div>
+</div>
+<script>
+    var Omain=document.getElementsByClassName('main')[0];
+    var Obox=document.getElementsByClassName('box_color')[0];
+    var arrSpan=document.getElementsByTagName('span');
+    var timer;
+    var timer2;
+    var n=0;
+//点击触发
+    Omain.onclick=function(){
+        autoPlay();
+        Omain.timer=setInterval(autoPlay2,100);
+    };
+
+    for(var i =0;i<arrSpan.length;i++){
+        arrSpan[i].style.position='absolute';
+        arrSpan[i].style.top='0px';
+        arrSpan[i].style.left=0+i*60+'px';
+    }
+
+    //背景变色
+    function autoPlay(){
+        clearInterval(timer);
+        var curren=0;
+        var speed;
+        timer=setInterval(function (){
+           curren = parseInt(getStyle(Obox,'width'));
+
+            Obox.style.background='#6495ed';
+            speed = curren + 10;
+           if ( speed > 500  ) {
+               speed = 500;
+           }
+            if(speed == 500){
+                var count=1;
+                timer2=setInterval(function(){
+                    count++;
+                    if(count>3){
+                        Obox.style.opacity=(speed-100*count)/1000;
+                    }
+                    if(count == 6){
+                        clearInterval(timer2);
+                    }
+                },200);
+                clearInterval(timer);
+            }
+            Obox.style.width=speed + 'px';
+
+       },30)
+
+    }
+
+    //向上移动 渐渐消失
+    function animate(obj,json){
+        var flag= true;
+        clearInterval(obj.timer);
+        obj.timer=setInterval(function(){
+           for(var attr in json){
+               var step;
+               var now;
+               now=parseInt(getStyle(obj,attr));
+               step= (json[attr]-now)/ 10;
+               //step=now -10;
+               step = step > 0 ? Math.ceil(step) : Math.floor(step);
+
+               obj.style[attr] =now + step + "px" ;
+               obj.style.opacity=(json[attr]-parseInt(obj.style[attr]))/json[attr];
+           }
+            if(now != json[attr])  // 只要其中一个不满足条件 就不应该停止定时器  这句一定遍历里面
+            {
+                flag =  false;
+            }
+
+            if(flag){
+                clearInterval(obj.timer);
+            }
+
+        },100)
+    }
+
+    function autoPlay2() {
+        animate(arrSpan[n],{top: -100});//当前移出 渐渐消失 慢慢的走到 设置的 位置
+        n++;//下一个
+        n%=arrSpan.length;
+    }
+    
+    //获取对象样式方法 封装函数
+    function getStyle(obj,attr) {  //  谁的      那个属性
+        if(obj.currentStyle)  // ie 等
+        {
+            return obj.currentStyle[attr];  // 返回传递过来的某个属性
+        }
+        else
+        {
+            return window.getComputedStyle(obj,null)[attr];  // w3c 浏览器
+        }
+    }
+</script>
+</body>
+</html>

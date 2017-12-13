@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+
+<script src="miaov.js"></script>
+<script>
+window.onload = function () {
+	var str = '';
+	var len = 20;
+	var aDiv = document.getElementsByTagName('div');
+	var num = 0;
+
+
+	for ( var i=0; i<len; i++ ) {
+		str += '<div style="width:50px; height:50px; background:red; position:absolute; top:0px; left:'+ i*60 +'px;"></div>';
+	}
+	
+	document.body.innerHTML = str;
+	document.onclick =function(){
+        clearInterval( aDiv.timer );
+	    if(parseInt(getStyle(aDiv[aDiv.length-1],'top')) == 500){
+
+            moveUp ();
+        }else{
+            moveDown();
+        }
+    };
+    function moveDown () {
+        clearInterval( aDiv.timer );
+        aDiv.timer = setInterval( function (){
+            doMove( aDiv[num], 'top', 23, 500);
+            num ++;
+
+            if ( num === len ) {
+                clearInterval( aDiv.timer );
+                num=0;
+            }
+        }, 100 );
+    }
+
+    function moveUp () {
+        clearInterval( aDiv.timer );
+        aDiv.timer = setInterval( function (){
+            doMove( aDiv[num], 'top', 23, 10);
+            num ++;
+            if ( num === len ) {
+                clearInterval( aDiv.timer );
+                num=0;
+            }
+        }, 100 );
+    }
+};
+</script>
+
+</head>
+
+<body>
+</body>
+</html>
+
